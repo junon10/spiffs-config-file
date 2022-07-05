@@ -1,10 +1,8 @@
 /*
-    Project: spiffs_config_file
-    Microcontroller: ESP32
-    Ide: Arduino
-    Author: Junon M.
-    Version: 1.0.1
-    Date: 2022/07/05
+Arduino library: spiffs_config_file
+Author: Junon M.
+Version: 1.0.1
+Date: 2022/07/05
 */
 
 #include "scf.h"
