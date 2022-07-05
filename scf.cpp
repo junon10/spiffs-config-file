@@ -1,33 +1,32 @@
 /*
     Project: spiffs_config_file
     Microcontroller: ESP32
-    Compiler: Arduino GCC
+    Ide: Arduino
     Author: Junon M.
-    Version: 1.0.0
-    Date: 2022/07/04
+    Version: 1.0.1
+    Date: 2022/07/05
 */
 
-#include <Arduino.h>
 #include "scf.h"
 
 #include "FS.h"
 #include <SPIFFS.h>
 
-//----------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------
 scf::scf() {
   _file_name = "/config.ini";
   _file_content = "";
 }
-//----------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------
 scf::~scf() {
 
 }
-//----------------------------------------------------------------------------------------
-bool scf::fileExists() {
+//---------------------------------------------------------------------------------------------------------
+bool scf::file_exists() {
   return SPIFFS.exists(_file_name);
 }
-//----------------------------------------------------------------------------------------
-void scf::setFileName(String FileName) {
+//---------------------------------------------------------------------------------------------------------
+void scf::set_filename(String FileName) {
 
   _file_name = FileName;
   
@@ -37,22 +36,46 @@ void scf::setFileName(String FileName) {
 
   SPIFFS.begin();
 }
-//----------------------------------------------------------------------------------------
-String scf::float2String(float from)
-{
-  char sValue[30];
-  sprintf(sValue, "%.9f", from);
-  return String(sValue);
+//---------------------------------------------------------------------------------------------------------
+uint64_t scf::string_2_uint64(String from) {
+  String x = from;
+  uint64_t y = 0;
+
+  for (int i = 0; i < x.length(); i++) {
+    char c = x.charAt(i);
+    if (c < '0' || c > '9') break;
+    y *= 10;
+    y += (c - '0');
+  }
+  return y;
 }
-//----------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------
+String scf::uint64_2_string(uint64_t from) {
+  uint64_t input = from;
+  String result = "";
+  uint8_t base = 10;
+
+  do {
+    char c = input % base;
+    input /= base;
+
+    if (c < 10)
+      c += '0';
+    else
+      c += 'A' - 10;
+    result = c + result;
+  } while (input);
+  return result;
+} 
+//---------------------------------------------------------------------------------------------------------
 void scf::write_txt_file(String path, String content)
 {
   File f = SPIFFS.open(path, "w");
   f.write((uint8_t *)content.c_str(), content.length());
   f.close();
 }
-//----------------------------------------------------------------------------------------
-String scf::getStr(String Label)
+//---------------------------------------------------------------------------------------------------------
+String scf::get_str(String Label)
 {
   FILE *arq;
   char Buff[100];
@@ -123,29 +146,39 @@ String scf::getStr(String Label)
   return "";
 }
 //----------------------------------------------------------------------------------------
-float scf::getFloat(String Label)
+double scf::get_double(String Label)
 {
-   return atof(scf::getStr(Label).c_str());
+  return scf::get_str(Label).toDouble();
 }
 //----------------------------------------------------------------------------------------
-int scf::getInt(String Label)
+long scf::get_long(String Label)
 {
-  return atoi(scf::getStr(Label).c_str());
+  return atol(scf::get_str(Label).c_str());
 }
 //----------------------------------------------------------------------------------------
-void scf::putStr(String Label, String Value)
+uint64_t scf::get_uint64(String Label)
+{
+  return string_2_uint64(scf::get_str(Label));
+}
+//----------------------------------------------------------------------------------------
+void scf::set_str(String Label, String Value)
 {
   _file_content += Label + " = " + Value + "\n";
 }
 //----------------------------------------------------------------------------------------
-void scf::putFloat(String Label, float Value)
+void scf::set_double(String Label, double Value)
 {
-  _file_content += Label + " = " + scf::float2String(Value) + "\n";
+  _file_content += Label + " = " + String(Value, 12) + "\n";
 }
 //----------------------------------------------------------------------------------------
-void scf::putInt(String Label, int Value)
+void scf::set_long(String Label, long Value)
 {
   _file_content += Label + " = " + String(Value) + "\n";
+}
+//----------------------------------------------------------------------------------------
+void scf::set_uint64(String Label, uint64_t Value)
+{
+  _file_content += Label + " = " + scf::uint64_2_string(Value) + "\n";
 }
 //----------------------------------------------------------------------------------------
 void scf::commit()
