@@ -1,8 +1,8 @@
 /*
 Arduino library: spiffs_config_file
 Author: Junon M.
-Version: 1.0.1
-Date: 2022/07/05
+Version: 1.0.2
+Date: 2022/07/17
 */
 
 #include "scf.h"
@@ -78,7 +78,7 @@ String scf::get_str(String Label)
   FILE *arq;
   char Buff[100];
   char *result;
-  int p1 = 0, p2 = 0, len = 0;
+  int pEqual = 0, pLabel = 0, pComment = 0, len = 0;
   String s = "", s1 = "", s2 = "";
   String fname = "";
 
@@ -105,22 +105,29 @@ String scf::get_str(String Label)
       // Copie o conteúdo da linha que foi lida para uma string
       s = Buff;
 
-      // Tente localizar o separador
-      p1 = s.indexOf("=");
+      // Tente localizar a tag de comentário
+      pComment = s.indexOf("#");
 
-      if (p1 != -1) // Se for localizado, execute
+      // Se for localizado, remova tudo à partir do comentário
+      // até o final da string
+      if (pComment != -1) s = s.substring(0, pComment);
+
+      // Tente localizar o separador
+      pEqual = s.indexOf("=");
+
+      if (pEqual != -1) // Se for localizado, execute
       {
         // Obtenha o tamanho do Rótulo (Label)
-        len = p1 - 1;
+        len = pEqual - 1;
 
         // Separe somente o Rótulo, isto é,
         // tudo que estiver antes do sinal de igual
         s1 = s.substring(0, len);
 
         // Tente localizar o Rótulo (label)
-        p2 = s1.indexOf(Label.c_str());
+        pLabel = s1.indexOf(Label.c_str());
 
-        if (p2 != -1) // Se for localizado, execute
+        if (pLabel != -1) // Se for localizado, execute
         {
           // Rótulo localizado, primeiro feche o arquivo
           fclose(arq);
@@ -130,7 +137,7 @@ String scf::get_str(String Label)
 
           // Copie tudo que estiver depois do sinal de igual até
           // o final da linha
-          s2 = s.substring(p1 + 1, len);
+          s2 = s.substring(pEqual + 1, len);
 
           // Remova espaços se tiver
           s2.trim();
