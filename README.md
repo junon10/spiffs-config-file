@@ -1,11 +1,8 @@
-# Info:
-`Arduino library:` spiffs_config_file
+# Info
+<h3>Arduino lib: spiffs-config-file</h3>
+<h3>Version: 1.0.1</h3>
+<h3>Date: 2022/07/17</h3>
+<h3>Author: Junon M</h3>
 
-`Author:` Junon M.
-
-`Version:` 1.0.1
-
-`Date:` 2022/07/17
-
-# Description: 
-Facilita o salvamento e leitura de configurações na memória flash spiffs, utilizando um esquema semelhante à arquivos .ini
+# Description:
+Facilitates saving and reading configurations in spiffs flash memory, using a scheme similar to .ini files
