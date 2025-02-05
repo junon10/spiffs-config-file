@@ -26,7 +26,7 @@ To install the library:
 
 ## Limitations
 
-- Array support has not yet been added
+- Does not support arrays
 
 ## Author
 
