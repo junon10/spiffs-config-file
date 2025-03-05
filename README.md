@@ -45,5 +45,7 @@ To install the library:
 
 - **v1.0.1 (2022/07/17)**: Failure protection.
 
+## License
 
+- GPLv3
 

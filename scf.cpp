@@ -3,6 +3,7 @@ Arduino library: spiffs_config_file
 Author: Junon M.
 Version: 1.0.2
 Date: 2022/07/17
+License: GPLv3
 */
 
 #include "scf.h"
