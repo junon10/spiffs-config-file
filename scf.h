@@ -1,21 +1,23 @@
 /*
 Arduino library: spiffs_config_file
 Author: Junon M.
-Version: 1.0.2
-Date: 2022/07/17
+Version: 1.0.0.3
+Date: 2025/06/19
 License: GPLv3
 */
 
 #ifndef scf_h
 #define scf_h
 #include <Arduino.h>
+#include <vector>
+typedef std::vector<String> StringList;
 
 class scf
 {
   private:
     String _file_name;
     String _file_content;
-
+    
     void write_txt_file(String path, String content);
 
   public:
@@ -58,6 +60,7 @@ class scf
     double get_double(String Label);
     long get_long(String Label);
     uint64_t get_uint64(String Label);
+    StringList get_array_str(String Label);
     //----------------------------------------------------------------------------------------
 
     //----------------------------------------------------------------------------------------
@@ -67,6 +70,7 @@ class scf
     void set_double(String Label, double Value);
     void set_long(String Label, long Value);
     void set_uint64(String Label, uint64_t Value);
+    void set_array_str(String Label, StringList Value);
     //----------------------------------------------------------------------------------------
 
     //----------------------------------------------------------------------------------------

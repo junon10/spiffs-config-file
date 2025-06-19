@@ -1,8 +1,8 @@
 /*
 Arduino library: spiffs_config_file
 Author: Junon M.
-Version: 1.0.1
-Date: 2022/07/05
+Version: 1.0.0.3
+Date: 2025/06/19
 */
 
 
@@ -12,6 +12,9 @@ Date: 2022/07/05
 //----------------------------------------------------------------------------------------
 #include "scf.h"
 //----------------------------------------------------------------------------------------
+
+#include <vector>
+typedef std::vector<String> StringList;
 
 //----------------------------------------------------------------------------------------
 // Definição do nome de arquivo
@@ -33,6 +36,7 @@ double doubleVariable = 0;
 long longVariable = 0;
 uint64_t uint64Variable = 0;
 String text = "";
+StringList ReadedArray, SavedArray;
 //----------------------------------------------------------------------------------------
 
 
@@ -63,6 +67,9 @@ void loop() {
       doubleVariable = -12345.678901234567;
       longVariable = -98765432;
       uint64Variable = 1234567890123456789;
+      SavedArray.push_back("test1");
+      SavedArray.push_back("test2");
+      SavedArray.push_back("test3");
       saveConfig();
     }else{
       Serial.println("\n\nType in serial monitor: read, or save\n");
@@ -77,7 +84,10 @@ void LoadSetupDefaults(){
   textVariable = "Loaded Default Values";
   doubleVariable = -1;
   longVariable = -1;
-  uint64Variable = 1234567890;  
+  uint64Variable = 1234567890;
+  SavedArray.push_back("Value1");
+  SavedArray.push_back("Value2");
+  SavedArray.push_back("Value3");  
 }
 //----------------------------------------------------------------------------------------
 void readConfig()
@@ -93,12 +103,17 @@ void readConfig()
   doubleVariable = ini.get_double("doubleVariable");
   longVariable = ini.get_long("longVariable");
   uint64Variable = ini.get_uint64("uint64Variable");
+  ReadedArray = ini.get_array_str("my_array");
 
   Serial.println("\n\nFile contents read into variables: \n");
   Serial.println("textVariable: " + textVariable);
   Serial.print("doubleVariable: "); Serial.println(String(doubleVariable, 12));
   Serial.print("longVariable: "); Serial.println(longVariable);
   Serial.print("uint64Variable: "); Serial.println(ini.uint64_2_string(uint64Variable));
+  Serial.print("ReadedArray: ");
+  for (int i = 0; i < ReadedArray.size(); i++) {
+    Serial.println(ReadedArray[i]);
+  }
   
   Serial.println();
 
@@ -112,7 +127,8 @@ void saveConfig()
   ini.set_double("doubleVariable", doubleVariable);
   ini.set_long("longVariable", longVariable);
   ini.set_uint64("uint64Variable", uint64Variable);
-
+  ini.set_array_str("my_array", SavedArray);
+  
   ini.commit();
 
   Serial.println("ok");

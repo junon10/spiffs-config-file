@@ -1,8 +1,8 @@
 /*
 Arduino library: spiffs_config_file
 Author: Junon M.
-Version: 1.0.2
-Date: 2022/07/17
+Version: 1.0.0.3
+Date: 2025/06/19
 License: GPLv3
 */
 
@@ -13,7 +13,7 @@ License: GPLv3
 
 //---------------------------------------------------------------------------------------------------------
 scf::scf() {
-  _file_name = "/config.ini";
+  _file_name = "config.ini";
   _file_content = "";
 }
 //---------------------------------------------------------------------------------------------------------
@@ -33,7 +33,9 @@ void scf::set_filename(String FileName) {
   
   _file_content = "";
 
-  SPIFFS.begin();
+  if (!SPIFFS.begin()) {
+    Serial.println("Falha ao montar SPIFFS!");
+  }  
 }
 //---------------------------------------------------------------------------------------------------------
 uint64_t scf::string_2_uint64(String from) {
@@ -167,6 +169,22 @@ uint64_t scf::get_uint64(String Label)
   return string_2_uint64(scf::get_str(Label));
 }
 //----------------------------------------------------------------------------------------
+// Função para ler um array de strings
+//----------------------------------------------------------------------------------------
+StringList scf::get_array_str(String Label) {
+  String value = get_str(Label);
+  StringList array;
+  int start = 0;
+  int end = value.indexOf(",");
+  while (end != -1) {
+    array.push_back(value.substring(start, end));
+    start = end + 1;
+    end = value.indexOf(",", start);
+  }
+  array.push_back(value.substring(start));
+  return array;
+}
+//----------------------------------------------------------------------------------------
 void scf::set_str(String Label, String Value)
 {
   _file_content += Label + " = " + Value + "\n";
@@ -185,6 +203,23 @@ void scf::set_long(String Label, long Value)
 void scf::set_uint64(String Label, uint64_t Value)
 {
   _file_content += Label + " = " + scf::uint64_2_string(Value) + "\n";
+}
+
+//----------------------------------------------------------------------------------------
+// Função para escrever um array de strings
+//----------------------------------------------------------------------------------------
+void scf::set_array_str(String Label, StringList Value) {
+  String value = "";
+  for (int i = 0; i < Value.size(); i++) 
+  {
+    value += Value[i];
+    
+    if (i < Value.size() - 1) 
+    {
+      value += ",";
+    }
+  }  
+  set_str(Label, value);
 }
 //----------------------------------------------------------------------------------------
 void scf::commit()

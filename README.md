@@ -43,7 +43,8 @@ To install the library:
 
 ## Changelog
 
-- **v1.0.1 (2022/07/17)**: Failure protection.
+- **v1.0.0.2 (2022/07/17)**: Failure protection.
+- **v1.0.0.3 (2025/06/19)**: Added support for string arrays
 
 ## License
 
