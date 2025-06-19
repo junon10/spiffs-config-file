@@ -24,10 +24,6 @@ To install the library:
 
 - See examples folder.
 
-## Limitations
-
-- Does not support arrays
-
 ## Author
 
 - **Junon M.**  
